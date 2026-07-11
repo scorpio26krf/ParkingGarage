@@ -10,4 +10,10 @@
     <ProjectReference Include="..\ParkingGarage.Core\ParkingGarage.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Endpoints\" />
+    <Folder Include="DTOs\" />
+    <Folder Include="Services\" />
+  </ItemGroup>
+
 </Project>

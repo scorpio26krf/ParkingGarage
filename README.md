@@ -1,6 +1,6 @@
-# ParkingGarage
+﻿# ParkingGarage
 
-A clean, test-driven parking garage system built with .NET 8, Minimal APIs, and a simple domain model. This project is being rebuilt from the ground up as a professional portfolio example demonstrating domain modeling, TDD, and API design.
+A multi‑project .NET 8 solution demonstrating domain‑driven design, TDD, and Minimal API implementation for a parking garage system. This project is being rebuilt from the ground up as a professional portfolio example showcasing clean architecture and modern .NET development practices.
 
 ---
 
@@ -20,7 +20,9 @@ A clean, test-driven parking garage system built with .NET 8, Minimal APIs, and 
             (Minimal API implementation coming next)
 
         ParkingGarage.Tests/
-            (NUnit test suite coming next)
+            CarTests.cs
+            GarageTests.cs
+            ParkingReceiptTests.cs
 
 ---
 
@@ -32,7 +34,21 @@ The core domain contains three foundational classes:
 - Garage: manages capacity, entry rules, exit rules, and pricing  
 - ParkingReceipt: returned when a car exits, containing timestamps, duration, and total price  
 
-These classes are intentionally minimal and will be expanded through test-driven development.
+These classes are intentionally minimal, focused, and fully validated through test‑driven development.
+
+---
+
+## Domain & Testing Status
+
+The domain layer is fully implemented and covered by a complete NUnit test suite.  
+All core behaviors—including car entry, exit, receipt generation, pricing, and garage capacity rules—are validated through deterministic unit tests.
+
+### Completed Test Coverage
+- CarTests.cs: validates car lifecycle (enter, exit, timestamps)  
+- GarageTests.cs: validates capacity rules, duplicate plates, exit behavior, pricing, and error handling  
+- ParkingReceiptTests.cs: validates receipt construction, duration, and pricing fields  
+
+This establishes a stable, well‑tested foundation for the upcoming Minimal API layer.
 
 ---
 
@@ -48,5 +64,5 @@ These classes are intentionally minimal and will be expanded through test-driven
 
 ## Status
 
-The domain model and solution structure are complete.  
-API and test implementation will follow next.
+The domain model and full test suite are complete.  
+API implementation will follow next.
