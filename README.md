@@ -1,36 +1,36 @@
 # ParkingGarage
 
-A multi‑project .NET 8 solution demonstrating domain‑driven design, TDD, and Minimal API implementation for a parking garage system.
+A clean, test-driven parking garage system built with .NET 8, Minimal APIs, and a simple domain model. This project is being rebuilt from the ground up as a professional portfolio example demonstrating domain modeling, TDD, and API design.
 
 ---
 
 ## Project Structure
 
-ParkingGarage/
-    ParkingGarage.sln
-    README.md
+    ParkingGarage/
+        ParkingGarage.sln
+        README.md
 
-    ParkingGarage.Core/
-        Models/
-            Car.cs
-            Garage.cs
-            ParkingReceipt.cs
+        ParkingGarage.Core/
+            Models/
+                Car.cs
+                Garage.cs
+                ParkingReceipt.cs
 
-    ParkingGarage.Api/
-        (Minimal API implementation coming next)
+        ParkingGarage.Api/
+            (Minimal API implementation coming next)
 
-    ParkingGarage.Tests/
-        (NUnit test suite coming next)
+        ParkingGarage.Tests/
+            (NUnit test suite coming next)
 
 ---
 
-## Domain Model (Current)
+## Domain Model
 
 The core domain contains three foundational classes:
 
-- **Car** � represents a vehicle entering and exiting the garage  
-- **Garage** � manages capacity, entry rules, exit rules, and pricing  
-- **ParkingReceipt** � returned when a car exits, containing timestamps, duration, and total price  
+- Car: represents a vehicle entering and exiting the garage  
+- Garage: manages capacity, entry rules, exit rules, and pricing  
+- ParkingReceipt: returned when a car exits, containing timestamps, duration, and total price  
 
 These classes are intentionally minimal and will be expanded through test-driven development.
 
