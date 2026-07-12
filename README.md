@@ -1,6 +1,6 @@
 ﻿# ParkingGarage
 
-A multi‑project .NET 8 solution demonstrating domain‑driven design, TDD, and Minimal API implementation for a parking garage system. This project is being rebuilt from the ground up as a professional portfolio example showcasing clean architecture and modern .NET development practices.
+A .NET 8 multi‑project solution that models a parking garage and exposes its behavior through a minimal API. The project focuses on clear separation between the domain, API, and tests, with full coverage across both layers.
 
 ---
 
@@ -17,52 +17,71 @@ A multi‑project .NET 8 solution demonstrating domain‑driven design, TDD, and
                 ParkingReceipt.cs
 
         ParkingGarage.Api/
-            (Minimal API implementation coming next)
+            DTOs/
+                EnterRequest.cs
+                ExitRequest.cs
+                ReceiptResponse.cs
+            Endpoints/
+                GarageEndpoints.cs
+            Services/
+                GarageService.cs
+            Program.cs
 
-        ParkingGarage.Tests/
+        ParkingGarage.Tests.Core/
             CarTests.cs
             GarageTests.cs
             ParkingReceiptTests.cs
+
+        ParkingGarage.Tests.Api/
+            CustomWebApplicationFactory.cs
+            GarageApiTests.cs
 
 ---
 
 ## Domain Model
 
-The core domain contains three foundational classes:
+The core domain contains three main classes:
 
-- Car: represents a vehicle entering and exiting the garage  
-- Garage: manages capacity, entry rules, exit rules, and pricing  
-- ParkingReceipt: returned when a car exits, containing timestamps, duration, and total price  
+- Car: represents a vehicle with entry and exit timestamps  
+- Garage: manages capacity, duplicate plates, entry/exit rules, and receipt creation  
+- ParkingReceipt: returned when a car exits, containing duration and pricing  
 
-These classes are intentionally minimal, focused, and fully validated through test‑driven development.
-
----
-
-## Domain & Testing Status
-
-The domain layer is fully implemented and covered by a complete NUnit test suite.  
-All core behaviors—including car entry, exit, receipt generation, pricing, and garage capacity rules—are validated through deterministic unit tests.
-
-### Completed Test Coverage
-- CarTests.cs: validates car lifecycle (enter, exit, timestamps)  
-- GarageTests.cs: validates capacity rules, duplicate plates, exit behavior, pricing, and error handling  
-- ParkingReceiptTests.cs: validates receipt construction, duration, and pricing fields  
-
-This establishes a stable, well‑tested foundation for the upcoming Minimal API layer.
+The domain is intentionally simple and easy to follow.
 
 ---
 
-## Goals
+## API Layer
 
-- Clean domain architecture  
-- Deterministic unit tests  
-- Minimal API exposing garage operations  
-- Professional folder and solution structure  
-- Clear separation of concerns  
+The API exposes the main garage operations:
+
+- POST /enter: park a car  
+- POST /exit: exit a car and get a receipt  
+- GET /cars: list parked cars  
+- GET /spaces: available spaces  
+- GET /status: garage summary  
+
+DTOs are small and focused. A thin GarageService sits between the API and domain.
 
 ---
 
-## Status
+## Testing
 
-The domain model and full test suite are complete.  
-API implementation will follow next.
+The solution includes full test coverage:
+
+- Domain tests: validate car behavior, garage rules, and receipt generation  
+- API tests: validate all endpoints end‑to‑end using WebApplicationFactory  
+- CustomWebApplicationFactory: ensures each test runs with a fresh garage  
+
+All tests pass.
+
+---
+
+## Why This Project
+
+This project demonstrates:
+
+- Clear separation between layers  
+- Minimal API usage  
+- Practical test setup  
+- Readable, maintainable code  
+- A realistic example of how I structure small .NET projects  

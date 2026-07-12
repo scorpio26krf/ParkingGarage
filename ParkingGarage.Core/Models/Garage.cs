@@ -1,5 +1,6 @@
 ﻿namespace ParkingGarage.Core.Models;
 
+// Represents the parking garage and manages all parking operations.
 public class Garage
 {
     private readonly List<Car> _cars = new();
@@ -10,8 +11,10 @@ public class Garage
         Capacity = capacity;
     }
 
+    // Current parked cars (read-only to protect internal state)
     public IReadOnlyList<Car> ParkedCars => _cars;
 
+    // Handles car entry rules: capacity + duplicate plates
     public bool CarEnters(string licensePlate, DateTime now)
     {
         if (_cars.Count >= Capacity)
@@ -24,15 +27,13 @@ public class Garage
         return true;
     }
 
+    // Handles car exit and creates a receipt
     public ParkingReceipt CarExits(string licensePlate, DateTime now)
     {
-        var car = _cars.FirstOrDefault(c => c.LicensePlate == licensePlate);
-        if (car == null)
-            throw new InvalidOperationException("Car not found.");
-
+        var car = _cars.FirstOrDefault(c => c.LicensePlate == licensePlate) ?? throw new InvalidOperationException("Car not found.");
         car.Exit(now);
 
-        var duration = (int)(now - car.EnteredAt).TotalMinutes;
+        var duration = Math.Max(1, (int)(now - car.EnteredAt).TotalMinutes);
         var price = CalculatePrice(duration);
 
         _cars.Remove(car);
@@ -49,5 +50,11 @@ public class Garage
     private static decimal CalculatePrice(int durationMinutes)
     {
         return 5m + durationMinutes * 0.10m;
+    }
+
+    // Used only for test isolation
+    public void Reset()
+    {
+        _cars.Clear();
     }
 }

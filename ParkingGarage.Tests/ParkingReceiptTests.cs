@@ -5,7 +5,7 @@ namespace ParkingGarage.Tests;
 public class ParkingReceiptTests
 {
     [Test]
-    public void ConstructorSetsAllPropertiesCorrectly()
+    public void ReceiptCreation_SetsAllProperties()
     {
         var license = "ABC123";
         var entered = new DateTime(2026, 6, 29, 12, 0, 0);
@@ -26,7 +26,7 @@ public class ParkingReceiptTests
     }
 
     [Test]
-    public void DurationMinutesIsAccurate()
+    public void ReceiptCreation_SetsCorrectDuration()
     {
         var entered = new DateTime(2026, 6, 29, 12, 0, 0);
         var exited = entered.AddMinutes(45);
@@ -37,7 +37,7 @@ public class ParkingReceiptTests
     }
 
     [Test]
-    public void TotalPriceIsStoredCorrectly()
+    public void ReceiptCreation_SetsCorrectPrice()
     {
         var receipt = new ParkingReceipt("PRICE1",
             DateTime.UtcNow,

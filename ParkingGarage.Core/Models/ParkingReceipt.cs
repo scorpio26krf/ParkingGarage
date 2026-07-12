@@ -1,5 +1,6 @@
 ﻿namespace ParkingGarage.Core.Models;
 
+// Returned when a car exits the garage.
 public class ParkingReceipt
 {
     public string LicensePlate { get; }

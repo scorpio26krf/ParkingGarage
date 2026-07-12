@@ -5,7 +5,7 @@ namespace ParkingGarage.Tests;
 public class CarTests
 {
     [Test]
-    public void ConstructorSetsLicensePlateAndEnteredAt()
+    public void CarCreation_SetsLicensePlateAndEnteredAt()
     {
         var now = DateTime.UtcNow;
         var car = new Car("ABC123", now);
@@ -19,7 +19,7 @@ public class CarTests
     }
 
     [Test]
-    public void ExitSetsExitedAt()
+    public void Exit_SetsExitedAt()
     {
         var enterTime = DateTime.UtcNow;
         var exitTime = enterTime.AddMinutes(20);
@@ -31,7 +31,7 @@ public class CarTests
     }
 
     [Test]
-    public void ExitedAtIsNullUntilExitIsCalled()
+    public void CarCreation_LeavesExitedAtNull()
     {
         var now = DateTime.UtcNow;
         var car = new Car("NOEXIT", now);

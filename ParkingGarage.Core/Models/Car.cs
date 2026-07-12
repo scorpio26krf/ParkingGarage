@@ -1,5 +1,6 @@
 ﻿namespace ParkingGarage.Core.Models;
 
+// Represents a parked car with entry/exit timestamps.
 public class Car
 {
     public string LicensePlate { get; }
@@ -13,6 +14,7 @@ public class Car
         ExitedAt = null;
     }
 
+    // Marks the car as exited
     public void Exit(DateTime exitTime)
     {
         ExitedAt = exitTime;

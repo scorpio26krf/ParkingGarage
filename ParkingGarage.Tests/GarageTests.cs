@@ -4,8 +4,28 @@ namespace ParkingGarage.Tests;
 
 public class GarageTests
 {
+    private Garage _garage;
+
+    [SetUp]
+    public void Setup()
+    {
+        _garage = new Garage(50);
+    }
+
     [Test]
-    public void CarEnters_WhenGarageHasSpace_ReturnsTrue()
+    public void CarEnters_AddsCar()
+    {
+        var result = _garage.CarEnters("ABC123", DateTime.UtcNow);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(result, Is.True);
+            Assert.That(_garage.ParkedCars, Has.Count.EqualTo(1));
+        });
+    }
+
+    [Test]
+    public void CarEntry_SucceedsWhenGarageHasSpace()
     {
         var garage = new Garage(capacity: 2);
         var now = DateTime.UtcNow;
@@ -21,7 +41,7 @@ public class GarageTests
     }
 
     [Test]
-    public void CarEnters_WhenGarageIsFull_ReturnsFalse()
+    public void CarEntry_FailsWhenGarageIsFull()
     {
         var garage = new Garage(capacity: 1);
         var now = DateTime.UtcNow;
@@ -37,7 +57,7 @@ public class GarageTests
     }
 
     [Test]
-    public void CarEnters_WhenLicensePlateAlreadyExists_ReturnsFalse()
+    public void CarEntry_FailsWhenLicensePlateAlreadyExists()
     {
         var garage = new Garage(capacity: 5);
         var now = DateTime.UtcNow;
@@ -53,7 +73,7 @@ public class GarageTests
     }
 
     [Test]
-    public void CarExits_WhenCarExists_ReturnsReceiptAndRemovesCar()
+    public void CarExit_ReturnsReceiptAndRemovesCar()
     {
         var garage = new Garage(capacity: 5);
         var enterTime = DateTime.UtcNow;
@@ -75,7 +95,7 @@ public class GarageTests
     }
 
     [Test]
-    public void CarExits_WhenCarDoesNotExist_ThrowsException()
+    public void CarExit_ThrowsWhenCarNotFound()
     {
         var garage = new Garage(capacity: 5);
         var now = DateTime.UtcNow;
