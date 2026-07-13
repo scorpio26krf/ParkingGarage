@@ -64,9 +64,11 @@ public class GarageApiTests
 
         Assert.Multiple(() =>
         {
-            Assert.That(receipt!.LicensePlate, Is.EqualTo("EXITME"));
-            Assert.That(receipt.DurationMinutes, Is.GreaterThan(0));
-            Assert.That(receipt.TotalPrice, Is.GreaterThan(0));
+            Assert.That(receipt, Is.Not.Null);
+            Assert.That(receipt.EntryTime, Is.LessThan(receipt.ExitTime));
+            Assert.That(receipt.TotalHours, Is.GreaterThan(0));
+            Assert.That(receipt.TotalAmount, Is.GreaterThanOrEqualTo(0));
+            Assert.That(receipt.AppliedRuleLabel, Is.Not.Null);
         });
     }
 

@@ -77,19 +77,21 @@ public class GarageTests
     {
         var garage = new Garage(capacity: 5);
         var enterTime = DateTime.UtcNow;
-        var exitTime = enterTime.AddMinutes(30);
 
         garage.CarEnters("EXITME", enterTime);
 
-        var receipt = garage.CarExits("EXITME", exitTime);
+        var rule = new PricingRule("Standard", 5m, 0, null);
+        garage.SetPricingRule(rule);
+
+        var receipt = garage.CarExits("EXITME");
 
         Assert.Multiple(() =>
         {
-            Assert.That(receipt.LicensePlate, Is.EqualTo("EXITME"));
-            Assert.That(receipt.EnteredAt, Is.EqualTo(enterTime));
-            Assert.That(receipt.ExitedAt, Is.EqualTo(exitTime));
-            Assert.That(receipt.DurationMinutes, Is.EqualTo(30));
-            Assert.That(receipt.TotalPrice, Is.EqualTo(5m + (30 * 0.10m)));
+            Assert.That(receipt.EntryTime, Is.EqualTo(enterTime));
+            Assert.That(receipt.ExitTime, Is.GreaterThan(enterTime));
+            Assert.That(receipt.TotalHours, Is.GreaterThan(0));
+            Assert.That(receipt.TotalAmount, Is.GreaterThanOrEqualTo(5m));
+            Assert.That(receipt.AppliedRuleLabel, Is.EqualTo("Standard"));
             Assert.That(garage.ParkedCars, Is.Empty);
         });
     }
@@ -98,11 +100,10 @@ public class GarageTests
     public void CarExit_ThrowsWhenCarNotFound()
     {
         var garage = new Garage(capacity: 5);
-        var now = DateTime.UtcNow;
 
         Assert.Throws<InvalidOperationException>(() =>
         {
-            garage.CarExits("NOTFOUND", now);
+            garage.CarExits("NOTFOUND");
         });
     }
 }
