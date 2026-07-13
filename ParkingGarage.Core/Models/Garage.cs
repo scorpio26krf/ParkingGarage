@@ -3,12 +3,20 @@
 // Represents the parking garage and manages all parking operations.
 public class Garage
 {
-    private readonly List<Car> _cars = new();
+    private readonly List<Car> _cars = new();      // cars currently parked
+    private PricingRule? _pricingRule;             // pricing configuration
+
     public int Capacity { get; }
 
     public Garage(int capacity)
     {
         Capacity = capacity;
+    }
+
+    // Allows the app to configure how pricing works
+    public void SetPricingRule(PricingRule rule)
+    {
+        _pricingRule = rule ?? throw new ArgumentNullException(nameof(rule));
     }
 
     // Current parked cars (read-only to protect internal state)
@@ -28,28 +36,50 @@ public class Garage
     }
 
     // Handles car exit and creates a receipt
-    public ParkingReceipt CarExits(string licensePlate, DateTime now)
+    public Receipt CarExits(string licensePlate)
     {
-        var car = _cars.FirstOrDefault(c => c.LicensePlate == licensePlate) ?? throw new InvalidOperationException("Car not found.");
-        car.Exit(now);
+        if (_pricingRule is null)
+            throw new InvalidOperationException("Pricing rule has not been configured.");
 
-        var duration = Math.Max(1, (int)(now - car.EnteredAt).TotalMinutes);
-        var price = CalculatePrice(duration);
+        var car = _cars.FirstOrDefault(c => c.LicensePlate == licensePlate)
+            ?? throw new InvalidOperationException("Car not found.");
 
+        var exitTime = DateTime.UtcNow;
+        var duration = exitTime - car.EnteredAt;
+
+        // Round up for billing
+        var totalHours = (decimal)duration.TotalHours;
+
+        decimal totalAmount = 0;
+
+        // Apply pricing only if grace period is exceeded
+        if (duration.TotalMinutes > _pricingRule.GracePeriodMinutes)
+        {
+            totalAmount = Math.Ceiling(totalHours) * _pricingRule.RatePerHour;
+
+            // Apply daily cap if configured
+            if (_pricingRule.MaxDailyCharge.HasValue)
+            {
+                totalAmount = Math.Min(totalAmount, _pricingRule.MaxDailyCharge.Value);
+            }
+        }
+
+        var receipt = new Receipt(
+            Guid.NewGuid(),
+            car.EnteredAt,
+            exitTime,
+            totalHours,
+            totalAmount,
+            _pricingRule.Label
+        );
+
+        // Mark the car as exited
+        car.Exit(exitTime);
+
+        // Remove the car from the garage
         _cars.Remove(car);
 
-        return new ParkingReceipt(
-            car.LicensePlate,
-            car.EnteredAt,
-            now,
-            duration,
-            price
-        );
-    }
-
-    private static decimal CalculatePrice(int durationMinutes)
-    {
-        return 5m + durationMinutes * 0.10m;
+        return receipt;
     }
 
     // Used only for test isolation
