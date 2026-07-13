@@ -20,21 +20,20 @@ public static class GarageEndpoints
                 : Results.BadRequest("Garage full or car already parked.");
         });
 
-        // Exit a car
+        // Exit a car and return a receipt
         app.MapPost("/exit", ([FromBody] ExitRequest request, GarageService service) =>
         {
-            var now = DateTime.UtcNow;
-
             try
             {
-                var receipt = service.ExitCar(request.LicensePlate, now);
+                var receipt = service.ExitCar(request.LicensePlate);
 
                 return Results.Ok(new ReceiptResponse(
-                    receipt.LicensePlate,
-                    receipt.EnteredAt,
-                    receipt.ExitedAt,
-                    receipt.DurationMinutes,
-                    receipt.TotalPrice
+                    receipt.Id,
+                    receipt.EntryTime,
+                    receipt.ExitTime,
+                    receipt.TotalHours,
+                    receipt.TotalAmount,
+                    receipt.AppliedRuleLabel
                 ));
             }
             catch (InvalidOperationException)
@@ -72,5 +71,48 @@ public static class GarageEndpoints
 
             return Results.Ok(status);
         });
+
+        // Create a pricing rule
+        app.MapPost("/pricing-rules", ([FromBody] CreatePricingRuleRequest req, GarageService service) =>
+        {
+            var rule = service.CreatePricingRule(
+                req.Label,
+                req.RatePerHour,
+                req.GracePeriodMinutes,
+                req.MaxDailyCharge
+            );
+
+            return Results.Created($"/pricing-rules/{rule.Id}",
+                new PricingRuleResponse(
+                    rule.Id,
+                    rule.Label,
+                    rule.RatePerHour,
+                    rule.GracePeriodMinutes,
+                    rule.MaxDailyCharge
+                ));
+        });
+
+        // List pricing rules
+        app.MapGet("/pricing-rules", (GarageService service) =>
+        {
+            var rules = service.GetPricingRules()
+                .Select(r => new PricingRuleResponse(
+                    r.Id,
+                    r.Label,
+                    r.RatePerHour,
+                    r.GracePeriodMinutes,
+                    r.MaxDailyCharge
+                ));
+
+            return Results.Ok(rules);
+        });
+
+        // Set active pricing rule
+        app.MapPost("/pricing-rules/{id:guid}/activate", (Guid id, GarageService service) =>
+        {
+            service.SetPricingRule(id);
+            return Results.Ok();
+        });
     }
 }
+

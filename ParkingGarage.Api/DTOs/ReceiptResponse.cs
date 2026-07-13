@@ -1,9 +1,12 @@
 ﻿namespace ParkingGarage.Api.DTOs;
 
+// Returned when a car exits the garage
 public record ReceiptResponse(
-    string LicensePlate,
-    DateTime EnteredAt,
-    DateTime ExitedAt,
-    int DurationMinutes,
-    decimal TotalPrice
+    Guid Id,
+    DateTime EntryTime,
+    DateTime ExitTime,
+    decimal TotalHours,
+    decimal TotalAmount,
+    string AppliedRuleLabel
 );
+
