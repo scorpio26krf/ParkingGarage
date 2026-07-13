@@ -1,5 +1,4 @@
-﻿using ParkingGarage.Core;
-using ParkingGarage.Core.Models;
+﻿using ParkingGarage.Core.Models;
 
 namespace ParkingGarage.Api.Services;
 

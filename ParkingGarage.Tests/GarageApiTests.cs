@@ -54,8 +54,19 @@ public class GarageApiTests
     [Test]
     public async Task CarExit_ReturnsReceipt_WhenCarExists()
     {
+        // Create pricing rule
+        var ruleResponse = await _client.PostAsJsonAsync("/pricing-rules",
+            new CreatePricingRuleRequest("Standard", 5m, 10, null));
+
+        var rule = await ruleResponse.Content.ReadFromJsonAsync<PricingRuleResponse>();
+
+        // Activate pricing rule
+        await _client.PostAsync($"/pricing-rules/{rule!.Id}/activate", null);
+
+        // Enter car
         await _client.PostAsJsonAsync("/enter", new EnterRequest("EXITME"));
 
+        // Exit car
         var response = await _client.PostAsJsonAsync("/exit", new ExitRequest("EXITME"));
 
         Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK));
@@ -68,7 +79,7 @@ public class GarageApiTests
             Assert.That(receipt.EntryTime, Is.LessThan(receipt.ExitTime));
             Assert.That(receipt.TotalHours, Is.GreaterThan(0));
             Assert.That(receipt.TotalAmount, Is.GreaterThanOrEqualTo(0));
-            Assert.That(receipt.AppliedRuleLabel, Is.Not.Null);
+            Assert.That(receipt.AppliedRuleLabel, Is.EqualTo("Standard"));
         });
     }
 

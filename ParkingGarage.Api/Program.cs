@@ -6,7 +6,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Dependency Injection
 builder.Services.AddSingleton(new Garage(capacity: 50));
-builder.Services.AddScoped<GarageService>();
+builder.Services.AddSingleton<GarageService>();
 
 var app = builder.Build();
 
