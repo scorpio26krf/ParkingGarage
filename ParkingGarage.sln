@@ -15,6 +15,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{E76AC515
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{0E6D838C-BD8B-447A-ABDF-AEF66A32AF48}"
 	ProjectSection(SolutionItems) = preProject
+		global.json = global.json
 		README.md = README.md
 	EndProjectSection
 EndProject
