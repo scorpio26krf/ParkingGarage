@@ -1,4 +1,7 @@
+using Microsoft.EntityFrameworkCore;
+using ParkingGarage.Api.Data;
 using ParkingGarage.Api.Endpoints;
+using ParkingGarage.Api.Repositories;
 using ParkingGarage.Api.Services;
 using ParkingGarage.Core.Models;
 
@@ -6,7 +9,12 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Dependency Injection
 builder.Services.AddSingleton(new Garage(capacity: 50));
-builder.Services.AddSingleton<GarageService>();
+
+builder.Services.AddScoped<PricingRuleRepository>();
+builder.Services.AddScoped<ReceiptRepository>();
+builder.Services.AddScoped<GarageService>();
+
+builder.Services.AddDbContext<GarageDbContext>(options => options.UseSqlite("Data Source=garage.db"));
 
 var app = builder.Build();
 
