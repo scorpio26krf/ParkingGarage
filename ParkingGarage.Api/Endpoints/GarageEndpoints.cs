@@ -12,6 +12,12 @@ public static class GarageEndpoints
         // Enter a car
         app.MapPost("/enter", ([FromBody] EnterRequest request, GarageService service) =>
         {
+            if (string.IsNullOrWhiteSpace(request.LicensePlate))
+                return Results.BadRequest("License plate is required.");
+
+            if (request.LicensePlate.Length > 10)
+                return Results.BadRequest("License plate cannot exceed 10 characters.");
+
             var now = DateTime.UtcNow;
             var success = service.EnterCar(request.LicensePlate, now);
 
@@ -20,9 +26,13 @@ public static class GarageEndpoints
                 : Results.BadRequest("Garage full or car already parked.");
         });
 
+
         // Exit a car and return a receipt
         app.MapPost("/exit", ([FromBody] ExitRequest request, GarageService service) =>
         {
+            if (string.IsNullOrWhiteSpace(request.LicensePlate))
+                return Results.BadRequest("License plate is required.");
+
             try
             {
                 var receipt = service.ExitCar(request.LicensePlate);
@@ -75,6 +85,18 @@ public static class GarageEndpoints
         // Create a pricing rule
         app.MapPost("/pricing-rules", ([FromBody] CreatePricingRuleRequest req, GarageService service) =>
         {
+            if (string.IsNullOrWhiteSpace(req.Label))
+                return Results.BadRequest("Label is required.");
+
+            if (req.RatePerHour <= 0)
+                return Results.BadRequest("RatePerHour must be greater than zero.");
+
+            if (req.GracePeriodMinutes < 0)
+                return Results.BadRequest("GracePeriodMinutes cannot be negative.");
+
+            if (req.MaxDailyCharge.HasValue && req.MaxDailyCharge < 0)
+                return Results.BadRequest("MaxDailyCharge cannot be negative.");
+
             var rule = service.CreatePricingRule(
                 req.Label,
                 req.RatePerHour,
